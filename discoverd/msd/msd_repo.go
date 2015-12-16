@@ -117,15 +117,15 @@ func (s *DiscoverdRepo) GetRouterTable(addr string) *api.RouterTable {
 	return s.calcRouterTable(addr)
 }
 
-func (s *DiscoverdRepo) RemoveRouterByHost(name string) {
-	s.logger.Printf("[INFO] ds.msd: Removing router by host:%s", name)
+func (s *DiscoverdRepo) RemoveRouterByHost(node string) {
+	s.logger.Printf("[INFO] ds.msd: Removing router by host:%s", node)
 	s.rtLock.Lock()
 	defer s.rtLock.Unlock()
 	for k, v := range s.routers {
 		addrs := v.Addrs
 		size := len(addrs)
 		for idx := size - 1; idx >= 0; idx-- {
-			if addrs[idx].Name == name {
+			if addrs[idx].Node == node {
 				addrs = append(addrs[:idx], addrs[idx+1:]...)
 			}
 		}
@@ -169,8 +169,8 @@ func (s *DiscoverdRepo) removeRouter(addr string) {
 	}
 }
 
-func (s *DiscoverdRepo) AddRouter(name string, addr string, mss []string) {
-	s.logger.Printf("[INFO] ds.msd: Adding router:%s,%s{%v}", name, addr, mss)
+func (s *DiscoverdRepo) AddRouter(node string, addr string, mss []string) {
+	s.logger.Printf("[INFO] ds.msd: Adding router:%s,%s{%v}", node, addr, mss)
 
 	s.rtLock.Lock()
 	defer s.rtLock.Unlock()
@@ -180,7 +180,7 @@ func (s *DiscoverdRepo) AddRouter(name string, addr string, mss []string) {
 	for _, ms := range mss {
 		router, exist := s.routers[ms]
 		if !exist {
-			nas := []api.NameAddr{api.NameAddr{Name: name, Addr: addr}}
+			nas := []api.NodeAddr{api.NodeAddr{Node: node, Addr: addr}}
 			s.routers[ms] = api.Router{
 				Service:  ms,
 				Addrs:    nas,
@@ -196,7 +196,7 @@ func (s *DiscoverdRepo) AddRouter(name string, addr string, mss []string) {
 				}
 			}
 			if !isExist {
-				addrs = append(addrs, api.NameAddr{Name: name, Addr: addr})
+				addrs = append(addrs, api.NodeAddr{Node: node, Addr: addr})
 				s.routers[ms] = api.Router{
 					Service:  ms,
 					Addrs:    addrs,
@@ -259,7 +259,7 @@ func (s *DiscoverdRepo) calcRouterTable(addr string) *api.RouterTable {
 	}
 }
 
-func (s *DiscoverdRepo) calcChecksum(ss []api.NameAddr) []byte {
+func (s *DiscoverdRepo) calcChecksum(ss []api.NodeAddr) []byte {
 	hasher := md5.New()
 	sum := make([]byte, 16)
 	for _, s := range ss {

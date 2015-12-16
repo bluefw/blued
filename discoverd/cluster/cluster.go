@@ -32,14 +32,14 @@ func DecodeMessage(buf []byte, out interface{}) error {
 
 type SerfCluster struct {
 	serf   *serf.Serf
-	name   string
+	node   string
 	logger *log.Logger
 }
 
 func NewSerfCluster(serf *serf.Serf, logger *log.Logger) Cluster {
 	return &SerfCluster{
 		serf:   serf,
-		name:   serf.LocalMember().Name,
+		node:   serf.LocalMember().Name,
 		logger: logger,
 	}
 }
@@ -50,8 +50,8 @@ func (c *SerfCluster) GetSerf() *serf.Serf {
 
 func (c *SerfCluster) RegisterService(ss *api.AppService) error {
 	ias := &api.InnerAppService{
-		NameAddr: api.NameAddr{
-			Name: c.name,
+		NodeAddr: api.NodeAddr{
+			Node: c.node,
 			Addr: ss.Addr,
 		},
 		Services: ss.Services,

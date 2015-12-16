@@ -21,18 +21,18 @@ type RouterTable struct {
 	Checksum string   `json:"checksum"`
 }
 
-type NameAddr struct {
-	Name string `json:"name"`
+type NodeAddr struct {
+	Node string `json:"node"`
 	Addr string `json:"addr"`
 }
 
 type Router struct {
 	Service  string     `json:"service"`
-	Addrs    []NameAddr `json:"addrs"`
+	Addrs    []NodeAddr `json:"addrs"`
 	Checksum []byte     `json:"checksum,omitempty"`
 }
 
 type InnerAppService struct {
-	NameAddr NameAddr `json:"naddr"`
+	NodeAddr NodeAddr `json:"nodeaddr"`
 	Services []string `json:"services"`
 }

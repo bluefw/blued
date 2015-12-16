@@ -98,7 +98,7 @@ func (h *DiscoverdEventHandler) onQuery(e *serf.Query) error {
 }
 
 func (h *DiscoverdEventHandler) registerService(ias *api.InnerAppService) {
-	h.discoverd.AddRouter(ias.NameAddr.Name, ias.NameAddr.Addr, ias.Services)
+	h.discoverd.AddRouter(ias.NodeAddr.Node, ias.NodeAddr.Addr, ias.Services)
 }
 func (h *DiscoverdEventHandler) unregisterService(addr string) {
 	h.discoverd.RemoveRouter(addr)

@@ -15,7 +15,7 @@ func StartRestServer(addr string, repo *msd.DiscoverdRepo, logger *log.Logger, s
 		rs.RegMicroApp(c)
 	})
 
-	router.GET("/msd/refresh/:addr", func(c *gin.Context) {
+	router.GET("/msd/fresh/:addr", func(c *gin.Context) {
 		rs.Refresh(c)
 	})
 
